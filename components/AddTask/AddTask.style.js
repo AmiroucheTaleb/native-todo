@@ -12,7 +12,7 @@ export const S = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    color: "#737cff",
+    color: "#5683ff",
     fontWeight: "bold",
   },
 });

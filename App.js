@@ -6,10 +6,14 @@ import TaskCard from "./components/TaskCard/TaskCard";
 import { useState } from "react";
 import Tab from "./components/Tab/Tab";
 import AddTask from "./components/AddTask/AddTask";
+import Dialog from "react-native-dialog";
+import uuid from "uuid";
 
 export default function App() {
   const [todoList, setTodoList] = useState([]);
   const [activeTab, setActiveTab] = useState("inProgress");
+  const [isAddVisible, setIsAddVisible] = useState("false");
+  const [addValue, setAddValue] = useState("");
 
   function deleteTodo(task) {
     Alert.alert(
@@ -65,6 +69,19 @@ export default function App() {
       </View>
     ));
   }
+  function showAddPopup() {
+    setIsAddVisible(true);
+  }
+  function addTodo() {
+    const newTodo = {
+      id: uuid.v4(),
+      title: addValue,
+      isCompleted: false,
+    };
+    setTodoList([...todoList, newTodo]);
+    setIsAddVisible(false);
+  }
+
   return (
     <>
       <SafeAreaProvider>
@@ -75,12 +92,21 @@ export default function App() {
           <View style={s.body}>
             <ScrollView style={{}}>{renderTodoList()}</ScrollView>
           </View>
-          <AddTask style={s.btnAdd} />
+          <AddTask onPress={showAddPopup} style={s.btnAdd} />
         </SafeAreaView>
       </SafeAreaProvider>
       <View style={s.footer}>
         <Tab currentTab={activeTab} changeActiveTab={changeActiveTab} todoList={todoList} />
       </View>
+      <Dialog.Container visible={isAddVisible} onBackdropPress={() => setIsAddVisible(false)}>
+        <Dialog.Title>Ajouter une tache</Dialog.Title>
+        <Dialog.Description>
+          vasy ecrit moi cette tache mais tu as interet a la faire , je veux pas qu'elle reste in
+          progress trop longtemp
+        </Dialog.Description>
+        <Dialog.Input onChangeText={setAddValue} />
+        <Dialog.Button disabled={addValue.trim().length === 0} label='Créer' onPress={addTodo} />
+      </Dialog.Container>
     </>
   );
 }
