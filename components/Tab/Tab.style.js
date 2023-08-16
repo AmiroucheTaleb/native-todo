@@ -12,7 +12,6 @@ export const s = StyleSheet.create({
   },
   active: {
     color: "#0084ff",
-    textDecorationLine: "underline",
   },
   text: {
     fontSize: 16,

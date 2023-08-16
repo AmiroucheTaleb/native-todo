@@ -16,7 +16,7 @@ let isLoadUpdated = false;
 export default function App() {
   const [todoList, setTodoList] = useState([]);
   const [activeTab, setActiveTab] = useState("inProgress");
-  const [isAddVisible, setIsAddVisible] = useState("false");
+  const [isAddVisible, setIsAddVisible] = useState(false);
   const [addValue, setAddValue] = useState("");
 
   useEffect(() => {
@@ -143,12 +143,17 @@ export default function App() {
         <Tab currentTab={activeTab} changeActiveTab={changeActiveTab} todoList={todoList} />
       </View>
       <Dialog.Container visible={isAddVisible} onBackdropPress={() => setIsAddVisible(false)}>
-        <Dialog.Title>Ajouter une tache</Dialog.Title>
-        <Dialog.Description>
+        <Dialog.Title style={{ color: "black", fontWeight: "bold" }}>
+          Ajouter une tache
+        </Dialog.Title>
+        <Dialog.Description style={{ color: "black" }}>
           vasy ecrit moi cette tache mais tu as interet a la faire , je veux pas qu'elle reste in
           progress trop longtemp
         </Dialog.Description>
-        <Dialog.Input onChangeText={setAddValue} />
+        <Dialog.Input
+          onChangeText={setAddValue}
+          style={{ color: "#bedcff", backgroundColor: "#000000" }}
+        />
         <Dialog.Button disabled={addValue.trim().length === 0} label='Créer' onPress={addTodo} />
       </Dialog.Container>
     </>
