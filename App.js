@@ -3,17 +3,61 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { s } from "./App.style";
 import Header from "./components/Header/Header";
 import TaskCard from "./components/TaskCard/TaskCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Tab from "./components/Tab/Tab";
 import AddTask from "./components/AddTask/AddTask";
 import Dialog from "react-native-dialog";
 import uuid from "uuid";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+let isFirstRender = true;
+let isLoadUpdated = false;
 
 export default function App() {
   const [todoList, setTodoList] = useState([]);
   const [activeTab, setActiveTab] = useState("inProgress");
   const [isAddVisible, setIsAddVisible] = useState("false");
   const [addValue, setAddValue] = useState("");
+
+  useEffect(() => {
+    loadTodoList();
+  }, []);
+
+  useEffect(() => {
+    if (isLoadUpdated) {
+      isLoadUpdated = false;
+    } else {
+      if (!isFirstRender) {
+        saveTodoList(todoList);
+      } else {
+        isFirstRender = false;
+      }
+    }
+  }, [todoList]);
+
+  async function saveTodoList(value) {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem("todo-list", jsonValue);
+      console.log("save");
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async function loadTodoList() {
+    try {
+      const stringValue = await AsyncStorage.getItem("todo-list");
+      if (stringValue !== null) {
+        const jsonValue = JSON.parse(stringValue);
+        isLoadUpdated = true;
+        setTodoList(jsonValue);
+        console.log("loading");
+      }
+    } catch (e) {
+      console.log("error loading todo list");
+    }
+  }
 
   function deleteTodo(task) {
     Alert.alert(
